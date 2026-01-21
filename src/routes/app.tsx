@@ -134,21 +134,6 @@ export function AppPage() {
       />
       <SoonerStack items={sooners} onDismiss={dismiss} />
 
-      {error ? (
-        <div className="mt-4 flex items-start justify-between gap-3 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-3 text-sm text-rose-100">
-          <div>
-            <p className="font-semibold">Model error</p>
-            <p className="text-rose-100/90">{error}</p>
-          </div>
-          <button
-            className="rounded-lg border border-white/15 px-3 py-1 text-xs font-semibold text-slate-50"
-            onClick={() => setError(null)}
-          >
-            Dismiss
-          </button>
-        </div>
-      ) : null}
-
       <div className="mt-5 space-y-4">
         <div className="flex items-center justify-between gap-2">
           <Stepper
