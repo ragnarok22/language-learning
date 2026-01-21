@@ -1,0 +1,21 @@
+{
+  "name": "Local-first Language Coach",
+  "short_name": "Language Coach",
+  "description": "Local-first language coach for planning and practicing Dutch. Set a goal, generate AI study plans, and drill lessons with audio—all saved in your browser.",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#0b1120",
+  "background_color": "#0b1120",
+  "display": "standalone",
+  "start_url": "/"
+}

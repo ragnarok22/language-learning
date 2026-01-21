@@ -2,9 +2,73 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>language-learning</title>
+    <title>
+      Local-first Language Coach | AI study plans &amp; Dutch practice
+    </title>
+    <meta
+      name="description"
+      content="Local-first language coach for planning and practicing Dutch. Set a goal, generate AI study plans, and drill lessons with audio—all saved in your browser."
+    />
+    <meta
+      name="keywords"
+      content="language learning app, Dutch study plan, AI language tutor, local-first, browser speech, interactive exercises"
+    />
+    <meta name="application-name" content="Local-first Language Coach" />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0b1120" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href="https://localhost/" />
+    <meta property="og:title" content="Local-first Language Coach" />
+    <meta
+      property="og:description"
+      content="Local-first language coach for planning and practicing Dutch, with AI-generated study plans, phonetics, audio, and drills that stay on-device."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://localhost/" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:site_name" content="Local-first Language Coach" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Local-first Language Coach" />
+    <meta
+      name="twitter:description"
+      content="Generate AI study plans, practice Dutch lessons with audio, and keep everything stored locally in your browser."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
+    <script>
+      const currentUrl = window?.location?.href ?? "https://localhost/";
+      const origin = window?.location?.origin ?? "https://localhost";
+      const canonical = document.querySelector('link[rel="canonical"]');
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (canonical) canonical.href = `${origin}/`;
+      if (ogUrl) ogUrl.setAttribute("content", currentUrl);
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Local-first Language Coach",
+        "alternateName": "Local Dutch Coach",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "description": "Local-first language coach for planning and practicing Dutch. Set a goal, generate AI study plans, and drill lessons with audio—all saved in your browser.",
+        "featureList": [
+          "AI-generated study plans for your language goals",
+          "Practice lessons with phonetics, speech playback, and drills",
+          "Local-only storage for settings, goals, and plan data"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
