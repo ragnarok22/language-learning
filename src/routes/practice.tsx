@@ -103,7 +103,8 @@ function PracticePage() {
             </p>
             <div className="mt-3 flex gap-2">
               <Link
-                to={`/practice/${index + 1}`}
+                to="/practice/$lessonId"
+                params={{ lessonId: String(index + 1) }}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-600 px-3 py-2 text-sm font-semibold text-white shadow transition hover:translate-y-[-1px]"
               >
                 Open practice →
