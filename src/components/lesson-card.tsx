@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Lesson } from "../types";
 
 type Props = {
@@ -9,6 +10,32 @@ type Props = {
 export function LessonCard({ lesson, onSpeak, speechSupported }: Props) {
   const chipButton =
     "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold";
+  const optionBase =
+    "rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-slate-100 transition hover:-translate-y-0.5 hover:border-emerald-300/50";
+
+  const [selected, setSelected] = useState<Record<number, string | null>>({});
+  const [result, setResult] = useState<
+    Record<number, "correct" | "wrong" | null>
+  >({});
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
+
+  const handleSelect = (
+    exerciseIndex: number,
+    option: string,
+    answer?: string,
+  ) => {
+    const isCorrect =
+      answer && option.trim().toLowerCase() === answer.trim().toLowerCase();
+    setSelected((prev) => ({ ...prev, [exerciseIndex]: option }));
+    setResult((prev) => ({
+      ...prev,
+      [exerciseIndex]: isCorrect ? "correct" : "wrong",
+    }));
+  };
+
+  const reveal = (exerciseIndex: number) => {
+    setRevealed((prev) => ({ ...prev, [exerciseIndex]: true }));
+  };
 
   return (
     <article className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 shadow-lg">
@@ -80,36 +107,95 @@ export function LessonCard({ lesson, onSpeak, speechSupported }: Props) {
           Exercises
         </p>
         <div className="mt-2 space-y-2">
-          {lesson.exercises.map((exercise, index) => (
-            <div
-              className="space-y-2 rounded-xl border border-white/10 bg-slate-900/50 px-3 py-3"
-              key={index}
-            >
-              <div>
-                <span className="inline-flex rounded-full bg-sky-500/15 px-3 py-1 text-xs font-semibold lowercase text-sky-200">
-                  {exercise.type}
-                </span>
-                <p className="mt-1 text-slate-100">{exercise.prompt}</p>
+          {lesson.exercises.map((exercise, index) => {
+            const answer = exercise.answer ?? "";
+            const state = result[index];
+            const isRevealed = revealed[index];
+            return (
+              <div
+                className="space-y-2 rounded-xl border border-white/10 bg-slate-900/50 px-3 py-3 transition hover:-translate-y-0.5 hover:border-emerald-300/50"
+                key={index}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <span className="inline-flex rounded-full bg-sky-500/15 px-3 py-1 text-xs font-semibold lowercase text-sky-200">
+                      {exercise.type}
+                    </span>
+                    <p className="mt-1 text-slate-100">{exercise.prompt}</p>
+                  </div>
+                  {exercise.answer ? (
+                    <button
+                      className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-100 transition hover:-translate-y-0.5"
+                      onClick={() => reveal(index)}
+                      type="button"
+                    >
+                      {isRevealed ? "Hide answer" : "Reveal answer"}
+                    </button>
+                  ) : null}
+                </div>
+
                 {exercise.options ? (
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {exercise.options.map((option) => (
-                      <span
-                        key={option}
-                        className="rounded-lg border border-white/10 bg-white/10 px-3 py-1 text-sm text-slate-100"
-                      >
-                        {option}
-                      </span>
-                    ))}
+                    {exercise.options.map((option) => {
+                      const isSelected = selected[index] === option;
+                      const isCorrect = isSelected && state === "correct";
+                      const isWrong = isSelected && state === "wrong";
+                      const optionClasses = [
+                        optionBase,
+                        isCorrect &&
+                          "border-emerald-400/70 bg-emerald-500/20 text-emerald-50",
+                        isWrong &&
+                          "border-rose-400/70 bg-rose-500/10 text-rose-50",
+                        isSelected && !state && "border-white/40 bg-white/15",
+                      ]
+                        .filter(Boolean)
+                        .join(" ");
+                      return (
+                        <button
+                          key={option}
+                          className={optionClasses}
+                          onClick={() => handleSelect(index, option, answer)}
+                          type="button"
+                        >
+                          <span className="flex items-center gap-2">
+                            {isCorrect ? (
+                              <span aria-hidden className="text-emerald-100">
+                                ✓
+                              </span>
+                            ) : null}
+                            {isWrong ? (
+                              <span aria-hidden className="text-rose-100">
+                                ✕
+                              </span>
+                            ) : null}
+                            <span>{option}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+
+                {state ? (
+                  <div
+                    className={`text-sm font-semibold ${
+                      state === "correct" ? "text-emerald-200" : "text-rose-200"
+                    }`}
+                  >
+                    {state === "correct"
+                      ? "Correct!"
+                      : "Not quite—try again or reveal the answer."}
+                  </div>
+                ) : null}
+
+                {isRevealed && exercise.answer ? (
+                  <div className="text-sm text-slate-200">
+                    Answer: {exercise.answer}
                   </div>
                 ) : null}
               </div>
-              {exercise.answer ? (
-                <div className="text-sm text-slate-300">
-                  Answer: {exercise.answer}
-                </div>
-              ) : null}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </article>

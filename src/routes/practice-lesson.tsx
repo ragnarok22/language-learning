@@ -27,12 +27,16 @@ export function PracticeLessonPage() {
     typeof window !== "undefined" && "speechSynthesis" in window,
   );
 
+  const currentIndex = useMemo(
+    () => Math.max(0, Number(params.lessonId ?? "1") - 1),
+    [params.lessonId],
+  );
   const lesson = useMemo(() => {
-    const index = Math.max(0, Number(params.lessonId) - 1);
-    return plan.lessons[index] ?? plan.lessons[0];
-  }, [params.lessonId, plan.lessons]);
-  const currentIndex = Math.max(0, Number(params.lessonId) - 1);
-  const hasNext = currentIndex + 1 < plan.lessons.length;
+    return plan.lessons[currentIndex] ?? plan.lessons[0];
+  }, [currentIndex, plan.lessons]);
+  const hasNext =
+    plan.lessons.length > 0 && currentIndex < plan.lessons.length - 1;
+  const nextIndex = Math.min(plan.lessons.length - 1, currentIndex + 1);
 
   const speak = (text: string) => {
     if (!speechSupported) {
@@ -69,14 +73,18 @@ export function PracticeLessonPage() {
           >
             ← Back to lessons
           </Link>
-          {hasNext ? (
-            <Link
-              to={`/practice/${currentIndex + 2}`}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-600 px-4 py-2 text-sm font-semibold text-white shadow transition hover:translate-y-[-1px]"
-            >
-              Next lesson →
-            </Link>
-          ) : null}
+          <Link
+            to="/practice/$lessonId"
+            params={{ lessonId: String(nextIndex + 1) }}
+            disabled={!hasNext}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold shadow transition hover:translate-y-[-1px] ${
+              hasNext
+                ? "bg-gradient-to-r from-emerald-500 to-sky-600 text-white"
+                : "border border-white/15 bg-white/5 text-slate-400 cursor-not-allowed"
+            }`}
+          >
+            Next lesson →
+          </Link>
         </div>
       </div>
 
