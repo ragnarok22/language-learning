@@ -33,8 +33,11 @@ export function LessonCard({ lesson, onSpeak, speechSupported }: Props) {
     }));
   };
 
-  const reveal = (exerciseIndex: number) => {
-    setRevealed((prev) => ({ ...prev, [exerciseIndex]: true }));
+  const toggleReveal = (exerciseIndex: number) => {
+    setRevealed((prev) => ({
+      ...prev,
+      [exerciseIndex]: !prev[exerciseIndex],
+    }));
   };
 
   return (
@@ -126,7 +129,7 @@ export function LessonCard({ lesson, onSpeak, speechSupported }: Props) {
                   {exercise.answer ? (
                     <button
                       className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-100 transition hover:-translate-y-0.5"
-                      onClick={() => reveal(index)}
+                      onClick={() => toggleReveal(index)}
                       type="button"
                     >
                       {isRevealed ? "Hide answer" : "Reveal answer"}
