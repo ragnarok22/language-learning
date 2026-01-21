@@ -55,20 +55,46 @@ export function PracticeLessonPage() {
   });
 
   const parseExercises = (content: string) => {
-    try {
-      const stripped = content
-        .replace(/```json/gi, "")
-        .replace(/```/g, "")
-        .trim();
-      const start = stripped.indexOf("[");
-      const end = stripped.lastIndexOf("]");
-      const candidate =
-        start !== -1 && end !== -1 ? stripped.slice(start, end + 1) : stripped;
-      return JSON.parse(candidate);
-    } catch (error) {
-      console.error("Failed to parse exercises", error);
-      throw new Error("Model response was not valid JSON exercises.");
+    const tryParse = (text: string) => {
+      try {
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) return parsed;
+        if (
+          parsed &&
+          Array.isArray((parsed as { exercises?: unknown }).exercises)
+        ) {
+          return (parsed as { exercises: unknown[] }).exercises;
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    };
+
+    const cleaned = content
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    const direct = tryParse(cleaned);
+    if (direct) return direct;
+
+    const bracketMatch = cleaned.match(/\[[\s\S]*\]/);
+    if (bracketMatch) {
+      const parsed = tryParse(bracketMatch[0]);
+      if (parsed) return parsed;
     }
+
+    const withoutFenceLines = content
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("```"))
+      .join("\n")
+      .trim();
+    const fallback = tryParse(withoutFenceLines);
+    if (fallback) return fallback;
+
+    console.error("Failed to parse exercises", content);
+    throw new Error("Model response was not valid JSON exercises.");
   };
 
   const addMoreExercises = async () => {
