@@ -7,6 +7,8 @@ type Props = {
   speechSupported: boolean;
   onRequestMoreExercises?: (lesson: Lesson) => void;
   onExplainLesson?: (lesson: Lesson) => void;
+  actionsDisabled?: boolean;
+  showExerciseSkeleton?: boolean;
 };
 
 export function LessonCard({
@@ -15,6 +17,8 @@ export function LessonCard({
   speechSupported,
   onRequestMoreExercises,
   onExplainLesson,
+  actionsDisabled,
+  showExerciseSkeleton,
 }: Props) {
   const chipButton =
     "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold";
@@ -128,6 +132,7 @@ export function LessonCard({
                 className={chipButton}
                 type="button"
                 onClick={() => onExplainLesson?.(lesson)}
+                disabled={actionsDisabled}
               >
                 Explain lesson
               </button>
@@ -135,13 +140,29 @@ export function LessonCard({
                 className={chipButton}
                 type="button"
                 onClick={() => onRequestMoreExercises?.(lesson)}
+                disabled={actionsDisabled}
               >
                 Add more exercises
               </button>
             </div>
           </div>
 
-          <div className="mt-2 space-y-2">
+          {showExerciseSkeleton ? (
+            <div className="mt-2 space-y-2">
+              <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3">
+                <div className="h-4 w-24 animate-pulse rounded bg-white/10"></div>
+                <div className="mt-2 space-y-2">
+                  <div className="h-3 w-full animate-pulse rounded bg-white/10"></div>
+                  <div className="h-3 w-4/5 animate-pulse rounded bg-white/10"></div>
+                  <div className="h-3 w-3/5 animate-pulse rounded bg-white/10"></div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          <div
+            className={`mt-2 space-y-2 ${showExerciseSkeleton ? "opacity-60 pointer-events-none" : ""}`}
+          >
             {lesson.exercises.map((exercise, index) => {
               const answer = exercise.answer ?? "";
               const state = result[index];
