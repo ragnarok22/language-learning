@@ -1,14 +1,15 @@
+import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { GoalCard } from "./components/goal-card";
-import { Hero } from "./components/hero";
-import { LessonCard } from "./components/lesson-card";
-import { PlanOverview } from "./components/plan-overview";
-import { SettingsCard } from "./components/settings-card";
-import { Stepper } from "./components/stepper";
-import { demoPlan } from "./data/demo-plan";
-import { useLocalStorage } from "./hooks/use-local-storage";
-import { normalizePlan, callTutor } from "./utils/ai";
-import type { Settings, StudyPlan } from "./types";
+import { GoalCard } from "../components/goal-card";
+import { Hero } from "../components/hero";
+import { LessonCard } from "../components/lesson-card";
+import { PlanOverview } from "../components/plan-overview";
+import { SettingsCard } from "../components/settings-card";
+import { Stepper } from "../components/stepper";
+import { demoPlan } from "../data/demo-plan";
+import { useLocalStorage } from "../hooks/use-local-storage";
+import { callTutor, normalizePlan } from "../utils/ai";
+import type { Settings, StudyPlan } from "../types";
 
 const defaultSettings: Settings = {
   apiKey: "",
@@ -18,7 +19,7 @@ const defaultSettings: Settings = {
   targetLanguage: "Dutch (nl-NL)",
 };
 
-function App() {
+export function AppPage() {
   const [settings, setSettings] = useLocalStorage<Settings>(
     "dutch.settings",
     defaultSettings,
@@ -109,7 +110,7 @@ function App() {
   const goPrev = () => setCurrentStep((step) => Math.max(step - 1, 0));
 
   return (
-    <div className="mx-auto max-w-5xl px-5 py-10 text-slate-50">
+    <div className="mx-auto max-w-5xl px-5 py-6 text-slate-50 md:py-10">
       <Hero
         onGenerate={handleGeneratePlan}
         onReset={handleReset}
@@ -118,11 +119,19 @@ function App() {
       />
 
       <div className="mt-5 space-y-4">
-        <Stepper
-          steps={steps}
-          currentStep={currentStep}
-          onSelect={setCurrentStep}
-        />
+        <div className="flex items-center justify-between gap-2">
+          <Stepper
+            steps={steps}
+            currentStep={currentStep}
+            onSelect={setCurrentStep}
+          />
+          <Link
+            to="/practice"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:translate-y-[-1px]"
+          >
+            Go to practice →
+          </Link>
+        </div>
 
         {currentStep === 0 ? (
           <SettingsCard
@@ -159,7 +168,7 @@ function App() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
-                  Lessons
+                  Lessons preview
                 </p>
                 <h2 className="text-2xl font-bold">
                   Practice with audio, phonetics, and drills
@@ -220,5 +229,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
