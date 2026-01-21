@@ -9,6 +9,7 @@ import { Stepper } from "../components/stepper";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
 import { callTutor, normalizePlan } from "../utils/ai";
+import { getVoiceForLanguage } from "../utils/speech";
 import type { Settings, StudyPlan } from "../types";
 
 const defaultSettings: Settings = {
@@ -48,13 +49,15 @@ export function AppPage() {
       setStatus("Speech synthesis is not available in this browser.");
       return;
     }
+    const voice = getVoiceForLanguage(settings.targetLanguage);
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = settings.targetLanguage.toLowerCase().includes("nl")
-      ? "nl-NL"
-      : "nl-NL";
-    utterance.voice =
-      speechSynthesis.getVoices().find((v) => v.lang === utterance.lang) ||
-      speechSynthesis.getVoices()[0];
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    } else {
+      const match = settings.targetLanguage.match(/\(([a-z0-9-]+)\)/i);
+      utterance.lang = match?.[1] ?? settings.targetLanguage;
+    }
     utterance.rate = 1;
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
@@ -69,11 +72,11 @@ export function AppPage() {
           {
             role: "system",
             content:
-              "You are a concise Dutch tutor creating compact study plans. Respond with pure JSON, no markdown.",
+              "You are a concise language tutor creating compact study plans. Respond with pure JSON, no markdown.",
           },
           {
             role: "user",
-            content: `Goal: ${goal}. Native language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Write all fields (title, steps, summaries, basics, exercises, notes) in ${settings.userLanguage} except the 'dutch' sentence text, which must stay in ${settings.targetLanguage}. Output JSON with keys: title, steps (array), lessons (array). Each lesson needs: id, title, topic, summary, basics (array of 3 points), sentences (3 items with dutch, translation in ${settings.userLanguage}, phonetic), exercises (2 items with type, prompt, options?, answer?). Keep it short and classroom-ready.`,
+            content: `Goal: ${goal}. Native language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Write all fields (title, steps, summaries, basics, exercises, notes) in ${settings.userLanguage} except the target-language sentence text (use the 'dutch' field), which must stay in ${settings.targetLanguage}. Output JSON with keys: title, steps (array), lessons (array). Each lesson needs: id, title, topic, summary, basics (array of 3 points), sentences (3 items with dutch text in ${settings.targetLanguage}, translation in ${settings.userLanguage}, phonetic), exercises (2 items with type, prompt, options?, answer?). Keep it short and classroom-ready.`,
           },
         ],
         settings,
@@ -100,7 +103,10 @@ export function AppPage() {
 
   const steps = [
     { title: "Setup", description: "API key, model, and languages." },
-    { title: "Goal", description: "Describe what you need Dutch for." },
+    {
+      title: "Goal",
+      description: "Describe what you need your target language for.",
+    },
     { title: "Plan", description: "Generate a study path with AI." },
     { title: "Practice", description: "Listen, read, and drill lessons." },
   ];

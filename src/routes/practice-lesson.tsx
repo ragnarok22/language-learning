@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { LessonCard } from "../components/lesson-card";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { getVoiceForLanguage } from "../utils/speech";
 import type { Settings, StudyPlan } from "../types";
 
 const defaultSettings: Settings = {
@@ -43,13 +44,15 @@ export function PracticeLessonPage() {
       setStatus("Speech synthesis is not available in this browser.");
       return;
     }
+    const voice = getVoiceForLanguage(settings.targetLanguage);
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = settings.targetLanguage.toLowerCase().includes("nl")
-      ? "nl-NL"
-      : "nl-NL";
-    utterance.voice =
-      speechSynthesis.getVoices().find((v) => v.lang === utterance.lang) ||
-      speechSynthesis.getVoices()[0];
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    } else {
+      const match = settings.targetLanguage.match(/\(([a-z0-9-]+)\)/i);
+      utterance.lang = match?.[1] ?? settings.targetLanguage;
+    }
     utterance.rate = 1;
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);

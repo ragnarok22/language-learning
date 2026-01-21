@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { listVoiceLanguages } from "../utils/speech";
 import type { Settings, StudyPlan } from "../types";
 
 type Props = {
@@ -15,11 +17,28 @@ export function SettingsCard({
   showKey,
   setShowKey,
 }: Props) {
+  const [voiceLanguages, setVoiceLanguages] = useState<
+    { lang: string; label: string }[]
+  >([]);
+
   const chipButton =
     "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold";
 
   const inputClass =
     "rounded-xl border border-white/10 bg-slate-900/60 px-3 py-2 text-slate-50 outline-none transition focus:border-emerald-400/60 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]";
+
+  useEffect(() => {
+    const loadVoices = () => setVoiceLanguages(listVoiceLanguages());
+
+    loadVoices();
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      return;
+    }
+    speechSynthesis.addEventListener("voiceschanged", loadVoices);
+    return () => {
+      speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+    };
+  }, []);
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-lg">
@@ -105,12 +124,22 @@ export function SettingsCard({
           <input
             type="text"
             value={settings.targetLanguage}
+            list={voiceLanguages.length ? "voice-languages" : undefined}
             onChange={(e) =>
               setSettings({ ...settings, targetLanguage: e.target.value })
             }
-            placeholder="Dutch (nl-NL)"
+            placeholder="Spanish (es-ES), Japanese (ja-JP), ..."
             className={inputClass}
           />
+          {voiceLanguages.length ? (
+            <datalist id="voice-languages">
+              {voiceLanguages.map((voice) => (
+                <option key={voice.lang} value={voice.lang}>
+                  {voice.label}
+                </option>
+              ))}
+            </datalist>
+          ) : null}
         </label>
       </div>
     </div>
