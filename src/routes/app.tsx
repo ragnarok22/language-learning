@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { GoalCard } from "../components/goal-card";
-import { Hero } from "../components/hero";
+import { Hero } from "@/components/hero";
 import { LessonCard } from "../components/lesson-card";
 import { PlanOverview } from "../components/plan-overview";
 import { SettingsCard } from "../components/settings-card";

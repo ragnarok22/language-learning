@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Hero } from "../components/hero";
+import { Hero } from "@/components/hero";
 import { demoPlan } from "../data/demo-plan";
 
 function Landing() {
