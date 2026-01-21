@@ -2,8 +2,10 @@ import { useState } from "react";
 import { GoalCard } from "../components/goal-card";
 import { PlanOverview } from "../components/plan-overview";
 import { SettingsCard } from "../components/settings-card";
+import { SoonerStack } from "../components/sooner";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { useSooner } from "../hooks/use-sooner";
 import type { Settings, StudyPlan } from "../types";
 import { callTutor, normalizePlan } from "../utils/ai";
 
@@ -32,6 +34,7 @@ function SetupPage() {
   const [busy, setBusy] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [step, setStep] = useState(0);
+  const { items: sooners, push, dismiss } = useSooner();
 
   const handleGeneratePlan = async () => {
     setBusy(true);
@@ -61,6 +64,7 @@ function SetupPage() {
         error instanceof Error ? error.message : "Failed to reach the model.";
       setStatus(message);
       setError(message);
+      push(message, "error");
     } finally {
       setBusy(false);
     }
@@ -107,21 +111,7 @@ function SetupPage() {
 
   return (
     <div className="space-y-4">
-      {error ? (
-        <div className="flex items-start justify-between gap-3 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-3 text-sm text-rose-100">
-          <div>
-            <p className="font-semibold">Model error</p>
-            <p className="text-rose-100/90">{error}</p>
-          </div>
-          <button
-            className="rounded-lg border border-white/15 px-3 py-1 text-xs font-semibold text-slate-50"
-            onClick={() => setError(null)}
-          >
-            Dismiss
-          </button>
-        </div>
-      ) : null}
-
+      <SoonerStack items={sooners} onDismiss={dismiss} />
       <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow">
         <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
           Setup flow

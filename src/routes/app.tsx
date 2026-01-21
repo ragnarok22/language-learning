@@ -6,8 +6,10 @@ import { LessonCard } from "../components/lesson-card";
 import { PlanOverview } from "../components/plan-overview";
 import { SettingsCard } from "../components/settings-card";
 import { Stepper } from "../components/stepper";
+import { SoonerStack } from "../components/sooner";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { useSooner } from "../hooks/use-sooner";
 import { callTutor, normalizePlan } from "../utils/ai";
 import { getVoiceForLanguage } from "../utils/speech";
 import type { Settings, StudyPlan } from "../types";
@@ -38,6 +40,7 @@ export function AppPage() {
   const [showKey, setShowKey] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const { items: sooners, push, dismiss } = useSooner();
 
   useEffect(() => {
     setSpeechSupported(
@@ -92,6 +95,7 @@ export function AppPage() {
         error instanceof Error ? error.message : "Failed to reach the model.";
       setStatus(message);
       setError(message);
+      push(message, "error");
     } finally {
       setBusy(false);
     }
@@ -128,6 +132,7 @@ export function AppPage() {
         status={status}
         busy={busy}
       />
+      <SoonerStack items={sooners} onDismiss={dismiss} />
 
       {error ? (
         <div className="mt-4 flex items-start justify-between gap-3 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-3 text-sm text-rose-100">

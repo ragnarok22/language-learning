@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { SoonerStack } from "../components/sooner";
+import { useSooner } from "../hooks/use-sooner";
 import type { Settings, StudyPlan } from "../types";
 import { callTutor, normalizePlan } from "../utils/ai";
 
@@ -24,6 +26,7 @@ function PracticePage() {
   );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const { items: sooners, push, dismiss } = useSooner();
 
   const handleGeneratePlan = async () => {
     setBusy(true);
@@ -53,6 +56,7 @@ function PracticePage() {
         error instanceof Error ? error.message : "Failed to reach the model.";
       setStatus(message);
       setError(message);
+      push(message, "error");
     } finally {
       setBusy(false);
     }
@@ -122,6 +126,7 @@ function PracticePage() {
           </div>
         ))}
       </div>
+      <SoonerStack items={sooners} onDismiss={dismiss} />
     </div>
   );
 }
