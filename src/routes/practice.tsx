@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { LessonCard } from "../components/lesson-card";
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
 import type { Settings, StudyPlan } from "../types";
@@ -23,30 +23,6 @@ function PracticePage() {
     "Data is stored locally in your browser.",
   );
   const [busy, setBusy] = useState(false);
-  const [speechSupported, setSpeechSupported] = useState(false);
-
-  useEffect(() => {
-    setSpeechSupported(
-      typeof window !== "undefined" && "speechSynthesis" in window,
-    );
-  }, []);
-
-  const speak = (text: string) => {
-    if (!speechSupported) {
-      setStatus("Speech synthesis is not available in this browser.");
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = settings.targetLanguage.toLowerCase().includes("nl")
-      ? "nl-NL"
-      : "nl-NL";
-    utterance.voice =
-      speechSynthesis.getVoices().find((v) => v.lang === utterance.lang) ||
-      speechSynthesis.getVoices()[0];
-    utterance.rate = 1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
-  };
 
   const handleGeneratePlan = async () => {
     setBusy(true);
@@ -109,13 +85,31 @@ function PracticePage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {plan.lessons.map((lesson) => (
-          <LessonCard
+        {plan.lessons.map((lesson, index) => (
+          <div
             key={lesson.id}
-            lesson={lesson}
-            onSpeak={speak}
-            speechSupported={speechSupported}
-          />
+            className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow transition hover:border-emerald-400/30"
+          >
+            <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
+              Lesson {index + 1}
+            </p>
+            <h3 className="text-xl font-semibold text-slate-50">
+              {lesson.title}
+            </h3>
+            <p className="text-slate-300">{lesson.summary}</p>
+            <p className="text-sm text-slate-400 mt-1">
+              {lesson.exercises.length} exercises • {lesson.sentences.length}{" "}
+              sentences
+            </p>
+            <div className="mt-3 flex gap-2">
+              <Link
+                to={`/practice/${index + 1}`}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-600 px-3 py-2 text-sm font-semibold text-white shadow transition hover:translate-y-[-1px]"
+              >
+                Open practice →
+              </Link>
+            </div>
+          </div>
         ))}
       </div>
     </div>

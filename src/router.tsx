@@ -7,6 +7,7 @@ import { RootLayout } from "./routes/root-layout";
 import { AppPage } from "./routes/app";
 import { Landing } from "./routes/index";
 import { PracticePage } from "./routes/practice";
+import { PracticeLessonPage } from "./routes/practice-lesson";
 import { SetupPage } from "./routes/setup";
 
 const rootRoute = createRootRoute({
@@ -37,11 +38,18 @@ const practiceRoute = createRoute({
   component: PracticePage,
 });
 
+const practiceLessonRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/practice/$lessonId",
+  component: PracticeLessonPage,
+});
+
 const routeTree = rootRoute.addChildren([
   landingRoute,
   appRoute,
   setupRoute,
   practiceRoute,
+  practiceLessonRoute,
 ]);
 
 export const router = createRouter({ routeTree });
