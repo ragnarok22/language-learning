@@ -1,4 +1,4 @@
-import { StudyPlan } from "../types";
+import type { StudyPlan } from "../types";
 
 export const demoPlan: StudyPlan = {
   title: "Two-week Dutch warmup",

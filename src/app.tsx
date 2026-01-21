@@ -6,7 +6,7 @@ import { SettingsCard } from "./components/settings-card";
 import { demoPlan } from "./data/demo-plan";
 import { useLocalStorage } from "./hooks/use-local-storage";
 import { normalizePlan, callTutor } from "./utils/ai";
-import { Settings, StudyPlan } from "./types";
+import type { Settings, StudyPlan } from "./types";
 
 const defaultSettings: Settings = {
   apiKey: "",
