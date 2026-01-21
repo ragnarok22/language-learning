@@ -73,18 +73,15 @@ export function PracticeLessonPage() {
           >
             ← Back to lessons
           </Link>
-          <Link
-            to="/practice/$lessonId"
-            params={{ lessonId: String(nextIndex + 1) }}
-            disabled={!hasNext}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold shadow transition hover:translate-y-[-1px] ${
-              hasNext
-                ? "bg-gradient-to-r from-emerald-500 to-sky-600 text-white"
-                : "border border-white/15 bg-white/5 text-slate-400 cursor-not-allowed"
-            }`}
-          >
-            Next lesson →
-          </Link>
+          {hasNext ? (
+            <Link
+              to="/practice/$lessonId"
+              params={{ lessonId: String(nextIndex + 1) }}
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-600 px-4 py-2 text-sm font-semibold text-white shadow transition hover:translate-y-[-1px]"
+            >
+              Next lesson →
+            </Link>
+          ) : null}
         </div>
       </div>
 
