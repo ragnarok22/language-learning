@@ -1,10 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Hero } from "../components/hero";
 import { demoPlan } from "../data/demo-plan";
-
-export const Route = createFileRoute("/")({
-  component: Landing,
-});
 
 function Landing() {
   return (
@@ -68,3 +64,5 @@ function Card({ title, body, cta, to }: CardProps) {
     </Link>
   );
 }
+
+export { Landing };

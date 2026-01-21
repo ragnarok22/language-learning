@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { GoalCard } from "../components/goal-card";
 import { PlanOverview } from "../components/plan-overview";
@@ -15,10 +14,6 @@ const defaultSettings: Settings = {
   userLanguage: "English",
   targetLanguage: "Dutch (nl-NL)",
 };
-
-export const Route = createFileRoute("/setup")({
-  component: SetupPage,
-});
 
 function SetupPage() {
   const [settings, setSettings] = useLocalStorage<Settings>(
@@ -133,3 +128,5 @@ function SetupPage() {
     </div>
   );
 }
+
+export { SetupPage };

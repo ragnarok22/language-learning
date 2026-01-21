@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LessonCard } from "../components/lesson-card";
 import { demoPlan } from "../data/demo-plan";
@@ -13,10 +12,6 @@ const defaultSettings: Settings = {
   userLanguage: "English",
   targetLanguage: "Dutch (nl-NL)",
 };
-
-export const Route = createFileRoute("/practice")({
-  component: PracticePage,
-});
 
 function PracticePage() {
   const [settings] = useLocalStorage<Settings>(
@@ -126,3 +121,5 @@ function PracticePage() {
     </div>
   );
 }
+
+export { PracticePage };
