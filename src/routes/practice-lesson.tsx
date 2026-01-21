@@ -1,6 +1,7 @@
 import { useParams, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { LessonCard } from "../components/lesson-card";
+import { SoonerStack, type SoonerItem } from "../components/sooner";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
 import { callTutor } from "../utils/ai";
@@ -32,6 +33,7 @@ export function PracticeLessonPage() {
   );
   const [actionBusy, setActionBusy] = useState(false);
   const [isAddingExercises, setIsAddingExercises] = useState(false);
+  const [sooners, setSooners] = useState<SoonerItem[]>([]);
   const [speechSupported] = useState(
     typeof window !== "undefined" && "speechSynthesis" in window,
   );
@@ -53,6 +55,37 @@ export function PracticeLessonPage() {
     options: raw.options?.map((opt) => String(opt)),
     answer: raw.answer,
   });
+
+  const dismissSooner = (id: number) =>
+    setSooners((prev) => prev.filter((item) => item.id !== id));
+
+  const pushSooner = (
+    message: string,
+    variant: SoonerItem["variant"] = "info",
+    persist = false,
+  ) => {
+    const id = Date.now() + Math.random();
+    setSooners((prev) => [...prev, { id, message, variant }]);
+    if (!persist && variant !== "loading") {
+      setTimeout(() => dismissSooner(id), 3200);
+    }
+    return id;
+  };
+
+  const updateSooner = (
+    id: number,
+    message: string,
+    variant: SoonerItem["variant"] = "info",
+  ) => {
+    setSooners((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, message, variant } : item,
+      ),
+    );
+    if (variant !== "loading") {
+      setTimeout(() => dismissSooner(id), 2600);
+    }
+  };
 
   const parseExercises = (content: string) => {
     const tryParse = (text: string) => {
@@ -101,6 +134,11 @@ export function PracticeLessonPage() {
     if (actionBusy) return;
     const lesson = plan.lessons[currentIndex];
     if (!lesson) return;
+    const loadingId = pushSooner(
+      "Generating more exercises...",
+      "loading",
+      true,
+    );
     setActionBusy(true);
     setIsAddingExercises(true);
     setActionError(null);
@@ -148,6 +186,11 @@ export function PracticeLessonPage() {
         lessons,
       });
       setActionMessage(`Added ${newExercises.length} exercises.`);
+      updateSooner(
+        loadingId,
+        `Added ${newExercises.length} exercises.`,
+        "success",
+      );
     } catch (error) {
       const message =
         error instanceof Error
@@ -155,6 +198,7 @@ export function PracticeLessonPage() {
           : "Failed to generate exercises.";
       setActionError(message);
       setActionMessage(null);
+      updateSooner(loadingId, message, "error");
     } finally {
       setActionBusy(false);
       setIsAddingExercises(false);
@@ -165,6 +209,7 @@ export function PracticeLessonPage() {
     if (actionBusy) return;
     const lesson = plan.lessons[currentIndex];
     if (!lesson) return;
+    const loadingId = pushSooner("Explaining this lesson...", "loading", true);
     setActionBusy(true);
     setActionError(null);
     setActionExplanation(null);
@@ -188,6 +233,7 @@ export function PracticeLessonPage() {
       );
       setActionExplanation(content.trim());
       setActionMessage("Lesson explanation ready.");
+      updateSooner(loadingId, "Lesson explained.", "success");
     } catch (error) {
       const message =
         error instanceof Error
@@ -195,6 +241,7 @@ export function PracticeLessonPage() {
           : "Failed to explain the lesson.";
       setActionError(message);
       setActionMessage(null);
+      updateSooner(loadingId, message, "error");
     } finally {
       setActionBusy(false);
     }
@@ -275,6 +322,7 @@ export function PracticeLessonPage() {
         actionsDisabled={actionBusy}
         showExerciseSkeleton={isAddingExercises}
       />
+      <SoonerStack items={sooners} onDismiss={dismissSooner} />
     </div>
   );
 }
