@@ -22,6 +22,14 @@ export function LessonCard({
 }: Props) {
   const chipButton =
     "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold";
+  const chipButtonDisabled =
+    "opacity-60 cursor-not-allowed border-white/5 bg-white/5";
+  const spinner = (
+    <span
+      className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white"
+      aria-hidden
+    />
+  );
   const optionBase =
     "rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold text-slate-100 transition hover:-translate-y-0.5 hover:border-emerald-300/50";
 
@@ -129,19 +137,21 @@ export function LessonCard({
             </p>
             <div className="flex flex-wrap gap-2">
               <button
-                className={chipButton}
+                className={`${chipButton} ${actionsDisabled ? chipButtonDisabled : ""}`}
                 type="button"
                 onClick={() => onExplainLesson?.(lesson)}
                 disabled={actionsDisabled}
               >
+                {actionsDisabled ? spinner : null}
                 Explain lesson
               </button>
               <button
-                className={chipButton}
+                className={`${chipButton} ${actionsDisabled ? chipButtonDisabled : ""}`}
                 type="button"
                 onClick={() => onRequestMoreExercises?.(lesson)}
                 disabled={actionsDisabled}
               >
+                {actionsDisabled ? spinner : null}
                 Add more exercises
               </button>
             </div>
