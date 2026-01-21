@@ -2,10 +2,10 @@ import { useState } from "react";
 import { GoalCard } from "../components/goal-card";
 import { PlanOverview } from "../components/plan-overview";
 import { SettingsCard } from "../components/settings-card";
-import { SoonerStack } from "../components/sooner";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
-import { useSooner } from "../hooks/use-sooner";
+import { ToastStack } from "../components/toast";
+import { useToast } from "../hooks/use-toast";
 import type { Settings, StudyPlan } from "../types";
 import { callTutor, normalizePlan } from "../utils/ai";
 
@@ -34,7 +34,7 @@ function SetupPage() {
   const [busy, setBusy] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [step, setStep] = useState(0);
-  const { items: sooners, push, dismiss } = useSooner();
+  const { items: toasts, push, dismiss } = useToast();
 
   const handleGeneratePlan = async () => {
     setBusy(true);
@@ -111,7 +111,7 @@ function SetupPage() {
 
   return (
     <div className="space-y-4">
-      <SoonerStack items={sooners} onDismiss={dismiss} />
+      <ToastStack items={toasts} onDismiss={dismiss} />
       <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow">
         <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
           Setup flow

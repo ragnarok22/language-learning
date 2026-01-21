@@ -1,13 +1,13 @@
 import { useParams, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { LessonCard } from "../components/lesson-card";
-import { SoonerStack } from "../components/sooner";
+import { ToastStack } from "../components/toast";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { useToast } from "../hooks/use-toast";
 import { callTutor } from "../utils/ai";
 import { getVoiceForLanguage } from "../utils/speech";
 import type { Exercise, Settings, StudyPlan } from "../types";
-import { useSooner } from "../hooks/use-sooner";
 
 const defaultSettings: Settings = {
   apiKey: "",
@@ -34,7 +34,7 @@ export function PracticeLessonPage() {
   );
   const [actionBusy, setActionBusy] = useState(false);
   const [isAddingExercises, setIsAddingExercises] = useState(false);
-  const { items: sooners, push, update, dismiss } = useSooner();
+  const { items: sooners, push, update, dismiss } = useToast();
   const [speechSupported] = useState(
     typeof window !== "undefined" && "speechSynthesis" in window,
   );
@@ -284,7 +284,7 @@ export function PracticeLessonPage() {
         actionsDisabled={actionBusy}
         showExerciseSkeleton={isAddingExercises}
       />
-      <SoonerStack items={sooners} onDismiss={dismiss} />
+      <ToastStack items={sooners} onDismiss={dismiss} />
     </div>
   );
 }

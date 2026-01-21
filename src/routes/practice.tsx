@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { demoPlan } from "../data/demo-plan";
 import { useLocalStorage } from "../hooks/use-local-storage";
-import { SoonerStack } from "../components/sooner";
-import { useSooner } from "../hooks/use-sooner";
+import { ToastStack } from "../components/toast";
+import { useToast } from "../hooks/use-toast";
 import type { Settings, StudyPlan } from "../types";
 import { callTutor, normalizePlan } from "../utils/ai";
 
@@ -26,7 +26,7 @@ function PracticePage() {
   );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const { items: sooners, push, dismiss } = useSooner();
+  const { items: toasts, push, dismiss } = useToast();
 
   const handleGeneratePlan = async () => {
     setBusy(true);
@@ -126,7 +126,7 @@ function PracticePage() {
           </div>
         ))}
       </div>
-      <SoonerStack items={sooners} onDismiss={dismiss} />
+      <ToastStack items={toasts} onDismiss={dismiss} />
     </div>
   );
 }
