@@ -35,7 +35,7 @@ export function AppPage() {
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
