@@ -92,6 +92,16 @@ export function PracticeLessonPage() {
         lesson={lesson}
         onSpeak={speak}
         speechSupported={speechSupported}
+        onExplainLesson={() =>
+          setStatus(
+            "Ask your tutor model to break down this lesson in your own words.",
+          )
+        }
+        onRequestMoreExercises={() =>
+          setStatus(
+            "Need more practice? Generate extra exercises with your tutor model.",
+          )
+        }
       />
     </div>
   );
