@@ -22,10 +22,12 @@ function PracticePage() {
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
+  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const handleGeneratePlan = async () => {
     setBusy(true);
+    setError(null);
     setStatus("Calling the model for a fresh plan...");
     try {
       const content = await callTutor(
@@ -45,10 +47,12 @@ function PracticePage() {
       const updatedPlan = normalizePlan(content, demoPlan);
       setPlan(updatedPlan);
       setStatus("Plan updated with AI output and saved locally.");
+      setError(null);
     } catch (error) {
-      setStatus(
-        error instanceof Error ? error.message : "Failed to reach the model.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Failed to reach the model.";
+      setStatus(message);
+      setError(message);
     } finally {
       setBusy(false);
     }
@@ -65,6 +69,11 @@ function PracticePage() {
             Practice with audio, phonetics, and drills
           </h1>
           <p className="text-slate-300">{status}</p>
+          {error ? (
+            <div className="mt-2 rounded-lg border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm text-rose-100">
+              {error}
+            </div>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
           <button

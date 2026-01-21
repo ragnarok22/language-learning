@@ -28,12 +28,14 @@ function SetupPage() {
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
+  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [step, setStep] = useState(0);
 
   const handleGeneratePlan = async () => {
     setBusy(true);
+    setError(null);
     setStatus("Calling the model for a fresh plan...");
     try {
       const content = await callTutor(
@@ -53,10 +55,12 @@ function SetupPage() {
       const updatedPlan = normalizePlan(content, demoPlan);
       setPlan(updatedPlan);
       setStatus("Plan updated with AI output and saved locally.");
+      setError(null);
     } catch (error) {
-      setStatus(
-        error instanceof Error ? error.message : "Failed to reach the model.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Failed to reach the model.";
+      setStatus(message);
+      setError(message);
     } finally {
       setBusy(false);
     }
@@ -103,6 +107,21 @@ function SetupPage() {
 
   return (
     <div className="space-y-4">
+      {error ? (
+        <div className="flex items-start justify-between gap-3 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-3 text-sm text-rose-100">
+          <div>
+            <p className="font-semibold">Model error</p>
+            <p className="text-rose-100/90">{error}</p>
+          </div>
+          <button
+            className="rounded-lg border border-white/15 px-3 py-1 text-xs font-semibold text-slate-50"
+            onClick={() => setError(null)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ) : null}
+
       <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow">
         <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
           Setup flow
