@@ -9,25 +9,21 @@ import { ToastStack } from "../components/toast";
 import { useToast } from "../hooks/use-toast";
 import type { Settings, StudyPlan } from "../types";
 import { callTutor, normalizePlan } from "../utils/ai";
-
-const defaultSettings: Settings = {
-  apiKey: "",
-  model: "gpt-4o-mini",
-  baseUrl: "https://api.openai.com/v1/chat/completions",
-  userLanguage: "English",
-  targetLanguage: "Spanish (es-ES)",
-};
+import { STORAGE_KEYS, defaultSettings } from "../lib/constants";
 
 function SetupPage() {
   const [settings, setSettings] = useLocalStorage<Settings>(
-    "ll.settings",
+    STORAGE_KEYS.SETTINGS,
     defaultSettings,
   );
   const [goal, setGoal] = useLocalStorage(
-    "ll.goal",
+    STORAGE_KEYS.GOAL,
     "Reach conversational B1 level.",
   );
-  const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
+  const [plan, setPlan] = useLocalStorage<StudyPlan>(
+    STORAGE_KEYS.PLAN,
+    demoPlan,
+  );
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );

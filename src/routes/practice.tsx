@@ -7,18 +7,17 @@ import { useToast } from "../hooks/use-toast";
 import type { Settings, StudyPlan } from "../types";
 import { callTutor, normalizePlan } from "../utils/ai";
 import { RequireApiKey } from "../components/require-api-key";
-
-const defaultSettings: Settings = {
-  apiKey: "",
-  model: "gpt-4o-mini",
-  baseUrl: "https://api.openai.com/v1/chat/completions",
-  userLanguage: "English",
-  targetLanguage: "Spanish (es-ES)",
-};
+import { STORAGE_KEYS, defaultSettings } from "../lib/constants";
 
 function PracticePage() {
-  const [settings] = useLocalStorage<Settings>("ll.settings", defaultSettings);
-  const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
+  const [settings] = useLocalStorage<Settings>(
+    STORAGE_KEYS.SETTINGS,
+    defaultSettings,
+  );
+  const [plan, setPlan] = useLocalStorage<StudyPlan>(
+    STORAGE_KEYS.PLAN,
+    demoPlan,
+  );
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
@@ -40,7 +39,7 @@ function PracticePage() {
           },
           {
             role: "user",
-            content: `Goal: ${localStorage.getItem("ll.goal")}. Native language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Write all fields (title, steps, summaries, basics, exercises, notes) in ${settings.userLanguage} except the target-language sentence text (use the 'target' field), which must stay in ${settings.targetLanguage}. Output JSON with keys: title, steps (array), lessons (array). Each lesson needs: id, title, topic, summary, basics (array of 3 points), sentences (3 items with target text in ${settings.targetLanguage}, translation in ${settings.userLanguage}, phonetic), exercises (2 items with type, prompt, options?, answer?). Keep it short and classroom-ready.`,
+            content: `Goal: ${localStorage.getItem(STORAGE_KEYS.GOAL)}. Native language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Write all fields (title, steps, summaries, basics, exercises, notes) in ${settings.userLanguage} except the target-language sentence text (use the 'target' field), which must stay in ${settings.targetLanguage}. Output JSON with keys: title, steps (array), lessons (array). Each lesson needs: id, title, topic, summary, basics (array of 3 points), sentences (3 items with target text in ${settings.targetLanguage}, translation in ${settings.userLanguage}, phonetic), exercises (2 items with type, prompt, options?, answer?). Keep it short and classroom-ready.`,
           },
         ],
         settings,
