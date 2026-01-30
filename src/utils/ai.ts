@@ -83,7 +83,7 @@ export function normalizePlan(raw: unknown, fallback: StudyPlan): StudyPlan {
               ? safeLesson.sentences.map((sentence) => {
                   const s = sentence as Partial<Sentence>;
                   return {
-                    dutch: s.dutch ?? "Voorbeeldzin ontbreekt.",
+                    target: s.target ?? "Target sentence missing.",
                     translation: s.translation ?? "Translation missing.",
                     phonetic: s.phonetic,
                     note: s.note,

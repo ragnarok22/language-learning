@@ -16,10 +16,7 @@ const defaultSettings: Settings = {
 };
 
 function PracticePage() {
-  const [settings] = useLocalStorage<Settings>(
-    "ll.settings",
-    defaultSettings,
-  );
+  const [settings] = useLocalStorage<Settings>("ll.settings", defaultSettings);
   const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",

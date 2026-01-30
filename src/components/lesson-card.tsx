@@ -209,9 +209,9 @@ export function LessonCard({
                         const optionClasses = [
                           optionBase,
                           isCorrect &&
-                          "border-emerald-400/70 bg-emerald-500/20 text-emerald-50",
+                            "border-emerald-400/70 bg-emerald-500/20 text-emerald-50",
                           isWrong &&
-                          "border-rose-400/70 bg-rose-500/10 text-rose-50",
+                            "border-rose-400/70 bg-rose-500/10 text-rose-50",
                           isSelected && !state && "border-white/40 bg-white/15",
                         ]
                           .filter(Boolean)
@@ -244,10 +244,11 @@ export function LessonCard({
 
                   {state ? (
                     <div
-                      className={`text-sm font-semibold ${state === "correct"
+                      className={`text-sm font-semibold ${
+                        state === "correct"
                           ? "text-emerald-200"
                           : "text-rose-200"
-                        }`}
+                      }`}
                     >
                       {state === "correct"
                         ? "Correct!"

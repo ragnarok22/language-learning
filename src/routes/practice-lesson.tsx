@@ -19,10 +19,7 @@ const defaultSettings: Settings = {
 
 export function PracticeLessonPage() {
   const params = useParams({ from: "/practice/$lessonId" });
-  const [settings] = useLocalStorage<Settings>(
-    "ll.settings",
-    defaultSettings,
-  );
+  const [settings] = useLocalStorage<Settings>("ll.settings", defaultSettings);
   const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
@@ -130,8 +127,8 @@ export function PracticeLessonPage() {
       const parsed = parseExercises(content);
       const newExercises = Array.isArray(parsed)
         ? parsed
-          .map((item, idx) => mapExercise(item as Partial<Exercise>, idx))
-          .filter(Boolean)
+            .map((item, idx) => mapExercise(item as Partial<Exercise>, idx))
+            .filter(Boolean)
         : [];
       if (!newExercises.length) {
         throw new Error("Model returned no exercises.");
