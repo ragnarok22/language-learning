@@ -1,16 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { STORAGE_KEYS, defaultSettings } from "../lib/constants";
 import type { Settings } from "../types";
 
 export function RequireApiKey({ children }: { children: ReactNode }) {
-  const [settings] = useLocalStorage<Settings>("ll.settings", {
-    apiKey: "",
-    model: "",
-    baseUrl: "",
-    userLanguage: "",
-    targetLanguage: "",
-  });
+  const [settings] = useLocalStorage<Settings>(
+    STORAGE_KEYS.SETTINGS,
+    defaultSettings,
+  );
 
   if (!settings.apiKey) {
     return (

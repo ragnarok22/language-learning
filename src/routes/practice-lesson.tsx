@@ -9,19 +9,18 @@ import { callTutor } from "../utils/ai";
 import { getVoiceForLanguage } from "../utils/speech";
 import { RequireApiKey } from "../components/require-api-key";
 import type { Exercise, Settings, StudyPlan } from "../types";
-
-const defaultSettings: Settings = {
-  apiKey: "",
-  model: "gpt-4o-mini",
-  baseUrl: "https://api.openai.com/v1/chat/completions",
-  userLanguage: "English",
-  targetLanguage: "Spanish (es-ES)",
-};
+import { STORAGE_KEYS, defaultSettings } from "../lib/constants";
 
 export function PracticeLessonPage() {
   const params = useParams({ from: "/practice/$lessonId" });
-  const [settings] = useLocalStorage<Settings>("ll.settings", defaultSettings);
-  const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
+  const [settings] = useLocalStorage<Settings>(
+    STORAGE_KEYS.SETTINGS,
+    defaultSettings,
+  );
+  const [plan, setPlan] = useLocalStorage<StudyPlan>(
+    STORAGE_KEYS.PLAN,
+    demoPlan,
+  );
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
