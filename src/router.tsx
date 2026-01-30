@@ -4,7 +4,6 @@ import {
   createRouter,
 } from "@tanstack/react-router";
 import { RootLayout } from "./routes/root-layout";
-import { AppPage } from "./routes/app";
 import { Landing } from "./routes/index";
 import { PracticePage } from "./routes/practice";
 import { PracticeLessonPage } from "./routes/practice-lesson";
@@ -20,11 +19,7 @@ const landingRoute = createRoute({
   component: Landing,
 });
 
-const appRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/app",
-  component: AppPage,
-});
+// appRoute removed
 
 const setupRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -46,7 +41,6 @@ const practiceLessonRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   landingRoute,
-  appRoute,
   setupRoute,
   practiceRoute,
   practiceLessonRoute,

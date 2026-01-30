@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useLocalStorage } from "../hooks/use-local-storage";
 import type { Settings } from "../types";
 

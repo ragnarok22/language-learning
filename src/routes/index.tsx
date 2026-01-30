@@ -23,12 +23,7 @@ function Landing() {
         </p>
 
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <Card
-            title="Full flow"
-            body="Setup → goal → plan → practice in one guided track."
-            cta="Enter wizard"
-            to="/app"
-          />
+          {/* Old full flow removed */}
           <Card
             title="Setup & plan"
             body="Jump to settings and plan creation."

@@ -7,6 +7,7 @@ import { useLocalStorage } from "../hooks/use-local-storage";
 import { useToast } from "../hooks/use-toast";
 import { callTutor } from "../utils/ai";
 import { getVoiceForLanguage } from "../utils/speech";
+import { RequireApiKey } from "../components/require-api-key";
 import type { Exercise, Settings, StudyPlan } from "../types";
 
 const defaultSettings: Settings = {
@@ -226,62 +227,64 @@ export function PracticeLessonPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            Lesson
-          </p>
-          <h1 className="text-2xl font-bold">{lesson.title}</h1>
-          <p className="text-slate-300">{lesson.summary}</p>
-          <p className="text-sm text-slate-400">{status}</p>
-          {actionMessage ? (
-            <p className="text-sm text-emerald-200">{actionMessage}</p>
-          ) : null}
-          {actionError ? (
-            <div className="mt-2 rounded-lg border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm text-rose-100">
-              {actionError}
-            </div>
-          ) : null}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            to="/practice"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:translate-y-[-1px]"
-          >
-            ← Back to lessons
-          </Link>
-          {hasNext ? (
-            <Link
-              to="/practice/$lessonId"
-              params={{ lessonId: String(nextIndex + 1) }}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-600 px-4 py-2 text-sm font-semibold text-white shadow transition hover:translate-y-[-1px]"
-            >
-              Next lesson →
-            </Link>
-          ) : null}
-        </div>
-      </div>
-
-      {actionExplanation ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100">
-          <div className="text-xs uppercase tracking-[0.25em] text-slate-400">
-            Lesson explanation
+    <RequireApiKey>
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
+              Lesson
+            </p>
+            <h1 className="text-2xl font-bold">{lesson.title}</h1>
+            <p className="text-slate-300">{lesson.summary}</p>
+            <p className="text-sm text-slate-400">{status}</p>
+            {actionMessage ? (
+              <p className="text-sm text-emerald-200">{actionMessage}</p>
+            ) : null}
+            {actionError ? (
+              <div className="mt-2 rounded-lg border border-rose-500/40 bg-rose-500/15 px-3 py-2 text-sm text-rose-100">
+                {actionError}
+              </div>
+            ) : null}
           </div>
-          <p className="mt-1 leading-relaxed">{actionExplanation}</p>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              to="/practice"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:translate-y-[-1px]"
+            >
+              ← Back to lessons
+            </Link>
+            {hasNext ? (
+              <Link
+                to="/practice/$lessonId"
+                params={{ lessonId: String(nextIndex + 1) }}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-600 px-4 py-2 text-sm font-semibold text-white shadow transition hover:translate-y-[-1px]"
+              >
+                Next lesson →
+              </Link>
+            ) : null}
+          </div>
         </div>
-      ) : null}
 
-      <LessonCard
-        lesson={lesson}
-        onSpeak={speak}
-        speechSupported={speechSupported}
-        onExplainLesson={explainLesson}
-        onRequestMoreExercises={addMoreExercises}
-        actionsDisabled={actionBusy}
-        showExerciseSkeleton={isAddingExercises}
-      />
-      <ToastStack items={sooners} onDismiss={dismiss} />
-    </div>
+        {actionExplanation ? (
+          <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100">
+            <div className="text-xs uppercase tracking-[0.25em] text-slate-400">
+              Lesson explanation
+            </div>
+            <p className="mt-1 leading-relaxed">{actionExplanation}</p>
+          </div>
+        ) : null}
+
+        <LessonCard
+          lesson={lesson}
+          onSpeak={speak}
+          speechSupported={speechSupported}
+          onExplainLesson={explainLesson}
+          onRequestMoreExercises={addMoreExercises}
+          actionsDisabled={actionBusy}
+          showExerciseSkeleton={isAddingExercises}
+        />
+        <ToastStack items={sooners} onDismiss={dismiss} />
+      </div>
+    </RequireApiKey>
   );
 }
