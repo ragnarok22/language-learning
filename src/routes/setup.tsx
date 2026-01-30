@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { GoalCard } from "../components/goal-card";
 import { PlanOverview } from "../components/plan-overview";
@@ -35,8 +36,23 @@ function SetupPage() {
   const [showKey, setShowKey] = useState(false);
   const [step, setStep] = useState(0);
   const { items: toasts, push, dismiss } = useToast();
+  const navigate = useNavigate();
 
   const handleGeneratePlan = async () => {
+    if (!settings.apiKey) {
+      const msg = "Please enter your API key in the Setup step first.";
+      setError(msg);
+      push(msg, "error");
+      return;
+    }
+
+    if (
+      plan !== demoPlan &&
+      !window.confirm("This will overwrite your current plan. Continue?")
+    ) {
+      return;
+    }
+
     setBusy(true);
     setError(null);
     setStatus("Calling the model for a fresh plan...");
@@ -101,7 +117,7 @@ function SetupPage() {
           plan={plan}
           onGenerate={handleGeneratePlan}
           onLoadDemo={() => setPlan(demoPlan)}
-          onNext={() => setStep(0)}
+          onNext={() => navigate({ to: "/practice" })}
           busy={busy}
           status={status}
         />

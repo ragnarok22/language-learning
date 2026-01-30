@@ -21,8 +21,8 @@ export async function callTutor(
   messages: { role: "system" | "user"; content: string }[],
   settings: Settings,
 ) {
-  if (!settings.apiKey) {
-    throw new Error("Add your API key to generate a custom plan.");
+  if (!settings.apiKey?.trim()) {
+    throw new Error("API Key is missing. Please add it in the Setup tab.");
   }
 
   const response = await fetch(settings.baseUrl, {
@@ -39,8 +39,19 @@ export async function callTutor(
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(`Model request failed: ${response.status} ${message}`);
+    const text = await response.text();
+    let message = `Model request failed: ${response.status}`;
+    try {
+      const errorJson = JSON.parse(text);
+      if (errorJson.error?.message) {
+        message += ` - ${errorJson.error.message}`;
+      } else {
+        message += ` ${text}`;
+      }
+    } catch {
+      message += ` ${text}`;
+    }
+    throw new Error(message);
   }
 
   const data = await response.json();
@@ -102,7 +113,7 @@ export function normalizePlan(raw: unknown, fallback: StudyPlan): StudyPlan {
       lessons,
     };
   } catch (error) {
-    console.error("Plan parse failed", error);
+    console.error("Plan parse failed. Raw input:", raw, "Error:", error);
     return fallback;
   }
 }

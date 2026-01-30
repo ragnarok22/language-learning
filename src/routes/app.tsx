@@ -93,7 +93,7 @@ export function AppPage() {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to reach the model.";
-      setStatus(message);
+      setStatus("Error: " + message);
       setError(message);
       push(message, "error");
     } finally {
@@ -102,6 +102,13 @@ export function AppPage() {
   };
 
   const handleReset = () => {
+    if (
+      !window.confirm(
+        "This will reset your settings, goal, and plan to defaults. Are you sure?",
+      )
+    ) {
+      return;
+    }
     setSettings(defaultSettings);
     setGoal("Reach conversational B1 for daily life in the Netherlands.");
     setPlan(demoPlan);

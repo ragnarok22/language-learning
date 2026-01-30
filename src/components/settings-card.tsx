@@ -59,7 +59,9 @@ export function SettingsCard({
 
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-2 text-sm text-slate-200">
-          <span>API key</span>
+          <span className="flex items-center gap-1">
+            API key <span className="text-red-400">*</span>
+          </span>
           <div className="flex items-center gap-2">
             <input
               type={showKey ? "text" : "password"}
@@ -78,6 +80,11 @@ export function SettingsCard({
               {showKey ? "Hide" : "Show"}
             </button>
           </div>
+          {!settings.apiKey && (
+            <span className="text-xs text-amber-300">
+              Required for AI plan generation.
+            </span>
+          )}
         </label>
 
         <label className="flex flex-col gap-2 text-sm text-slate-200">
