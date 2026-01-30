@@ -12,15 +12,15 @@ const defaultSettings: Settings = {
   model: "gpt-4o-mini",
   baseUrl: "https://api.openai.com/v1/chat/completions",
   userLanguage: "English",
-  targetLanguage: "Dutch (nl-NL)",
+  targetLanguage: "Spanish (es-ES)",
 };
 
 function PracticePage() {
   const [settings] = useLocalStorage<Settings>(
-    "dutch.settings",
+    "ll.settings",
     defaultSettings,
   );
-  const [plan, setPlan] = useLocalStorage<StudyPlan>("dutch.plan", demoPlan);
+  const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
@@ -42,7 +42,7 @@ function PracticePage() {
           },
           {
             role: "user",
-            content: `Goal: ${localStorage.getItem("dutch.goal")}. Native language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Write all fields (title, steps, summaries, basics, exercises, notes) in ${settings.userLanguage} except the target-language sentence text (use the 'dutch' field), which must stay in ${settings.targetLanguage}. Output JSON with keys: title, steps (array), lessons (array). Each lesson needs: id, title, topic, summary, basics (array of 3 points), sentences (3 items with dutch text in ${settings.targetLanguage}, translation in ${settings.userLanguage}, phonetic), exercises (2 items with type, prompt, options?, answer?). Keep it short and classroom-ready.`,
+            content: `Goal: ${localStorage.getItem("ll.goal")}. Native language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Write all fields (title, steps, summaries, basics, exercises, notes) in ${settings.userLanguage} except the target-language sentence text (use the 'target' field), which must stay in ${settings.targetLanguage}. Output JSON with keys: title, steps (array), lessons (array). Each lesson needs: id, title, topic, summary, basics (array of 3 points), sentences (3 items with target text in ${settings.targetLanguage}, translation in ${settings.userLanguage}, phonetic), exercises (2 items with type, prompt, options?, answer?). Keep it short and classroom-ready.`,
           },
         ],
         settings,

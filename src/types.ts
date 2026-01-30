@@ -1,5 +1,5 @@
 export type Sentence = {
-  dutch: string;
+  target: string;
   translation: string;
   phonetic?: string;
   note?: string;

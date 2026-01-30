@@ -14,16 +14,16 @@ const defaultSettings: Settings = {
   model: "gpt-4o-mini",
   baseUrl: "https://api.openai.com/v1/chat/completions",
   userLanguage: "English",
-  targetLanguage: "Dutch (nl-NL)",
+  targetLanguage: "Spanish (es-ES)",
 };
 
 export function PracticeLessonPage() {
   const params = useParams({ from: "/practice/$lessonId" });
   const [settings] = useLocalStorage<Settings>(
-    "dutch.settings",
+    "ll.settings",
     defaultSettings,
   );
-  const [plan, setPlan] = useLocalStorage<StudyPlan>("dutch.plan", demoPlan);
+  const [plan, setPlan] = useLocalStorage<StudyPlan>("ll.plan", demoPlan);
   const [status, setStatus] = useState(
     "Data is stored locally in your browser.",
   );
@@ -121,7 +121,7 @@ export function PracticeLessonPage() {
           {
             role: "user",
             content: `Target language: ${settings.targetLanguage}. Learner language: ${settings.userLanguage}. Lesson topic: ${lesson.title} (${lesson.topic}). Basics: ${lesson.basics.join("; ")}. Sentences: ${lesson.sentences
-              .map((s) => s.dutch)
+              .map((s) => s.target)
               .join(" | ")}. Return only JSON array of new exercises.`,
           },
         ],
@@ -130,8 +130,8 @@ export function PracticeLessonPage() {
       const parsed = parseExercises(content);
       const newExercises = Array.isArray(parsed)
         ? parsed
-            .map((item, idx) => mapExercise(item as Partial<Exercise>, idx))
-            .filter(Boolean)
+          .map((item, idx) => mapExercise(item as Partial<Exercise>, idx))
+          .filter(Boolean)
         : [];
       if (!newExercises.length) {
         throw new Error("Model returned no exercises.");
@@ -187,7 +187,7 @@ export function PracticeLessonPage() {
           {
             role: "user",
             content: `Learner language: ${settings.userLanguage}. Target: ${settings.targetLanguage}. Lesson: ${lesson.title} (${lesson.topic}). Summary: ${lesson.summary}. Basics: ${lesson.basics.join("; ")}. Sentences: ${lesson.sentences
-              .map((s) => `${s.dutch} (${s.translation})`)
+              .map((s) => `${s.target} (${s.translation})`)
               .join(" | ")}.`,
           },
         ],
