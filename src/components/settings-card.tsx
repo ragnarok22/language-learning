@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { listVoiceLanguages } from "../utils/speech";
+import { SUPPORTED_LANGUAGES } from "../lib/constants";
 import type { Settings, StudyPlan } from "../types";
 
 type Props = {
@@ -17,28 +16,14 @@ export function SettingsCard({
   showKey,
   setShowKey,
 }: Props) {
-  const [voiceLanguages, setVoiceLanguages] = useState<
-    { lang: string; label: string }[]
-  >([]);
-
   const chipButton =
     "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold";
 
   const inputClass =
     "rounded-xl border border-white/10 bg-slate-900/60 px-3 py-2 text-slate-50 outline-none transition focus:border-emerald-400/60 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]";
 
-  useEffect(() => {
-    const loadVoices = () => setVoiceLanguages(listVoiceLanguages());
-
-    loadVoices();
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      return;
-    }
-    speechSynthesis.addEventListener("voiceschanged", loadVoices);
-    return () => {
-      speechSynthesis.removeEventListener("voiceschanged", loadVoices);
-    };
-  }, []);
+  // Voice loading effect removed as we now use curated lists.
+  // We rely on the user picking a valid language code from the list.
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-lg">
@@ -115,38 +100,48 @@ export function SettingsCard({
 
         <label className="flex flex-col gap-2 text-sm text-slate-200">
           <span>Your language</span>
-          <input
-            type="text"
-            value={settings.userLanguage}
-            onChange={(e) =>
-              setSettings({ ...settings, userLanguage: e.target.value })
-            }
-            placeholder="English, Spanish, ..."
-            className={inputClass}
-          />
+          <div className="relative">
+            <select
+              value={settings.userLanguage}
+              onChange={(e) =>
+                setSettings({ ...settings, userLanguage: e.target.value })
+              }
+              className={`${inputClass} w-full appearance-none`}
+            >
+              <option value="" disabled>
+                Select a language
+              </option>
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.value} value={lang.value}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </label>
 
         <label className="flex flex-col gap-2 text-sm text-slate-200">
           <span>Learning language</span>
-          <input
-            type="text"
-            value={settings.targetLanguage}
-            list={voiceLanguages.length ? "voice-languages" : undefined}
-            onChange={(e) =>
-              setSettings({ ...settings, targetLanguage: e.target.value })
-            }
-            placeholder="Spanish (es-ES), Japanese (ja-JP), ..."
-            className={inputClass}
-          />
-          {voiceLanguages.length ? (
-            <datalist id="voice-languages">
-              {voiceLanguages.map((voice) => (
-                <option key={voice.lang} value={voice.lang}>
-                  {voice.label}
+          <div className="relative">
+            <select
+              value={settings.targetLanguage}
+              onChange={(e) =>
+                setSettings({ ...settings, targetLanguage: e.target.value })
+              }
+              className={`${inputClass} w-full appearance-none`}
+            >
+              <option value="" disabled>
+                Select a language
+              </option>
+              {SUPPORTED_LANGUAGES.filter(
+                (l) => l.value !== settings.userLanguage,
+              ).map((lang) => (
+                <option key={lang.value} value={lang.value}>
+                  {lang.label}
                 </option>
               ))}
-            </datalist>
-          ) : null}
+            </select>
+          </div>
         </label>
       </div>
     </div>
