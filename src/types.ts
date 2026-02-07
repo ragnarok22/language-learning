@@ -35,3 +35,9 @@ export type Settings = {
   userLanguage: string;
   targetLanguage: string;
 };
+
+export type AudioPracticeSentence = Sentence & {
+  id: string;
+};
+
+export type TtsVoice = "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer";

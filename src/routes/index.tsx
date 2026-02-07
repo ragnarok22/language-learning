@@ -31,6 +31,12 @@ function Landing() {
             cta="Practice"
             to="/practice"
           />
+          <Card
+            title="Audio practice"
+            body="AI-generated sentence pronunciation with OpenAI TTS."
+            cta="Audio practice"
+            to="/audio-practice"
+          />
         </div>
       </div>
     </div>
